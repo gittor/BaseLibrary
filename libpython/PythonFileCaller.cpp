@@ -15,8 +15,7 @@ using namespace libpy;
 PythonFileCaller::PythonFileCaller(const std::string& py_file)
 {
     m_module_name = libpy::getModuleName(py_file);
-    
-    initEnv();
+    m_env_inited = false;
 }
 
 PythonFileCaller::~PythonFileCaller()
@@ -34,13 +33,13 @@ PyObject* PythonFileCaller::call(const std::string &func_name, PyObject* pArgume
 {
     do
     {
+        initEnv();
+
         PyObject* pModule = PyImport_ImportModule( m_module_name.c_str() );
-        if (!pModule)
-            break;
+        Break_If(!pModule);
 
         PyObject* pFunc = PyObject_GetAttrString(pModule, func_name.c_str());
-        if (!pFunc)
-            break;
+        Break_If(!pFunc);
 
         PyObject* pRet = PyEval_CallObject(pFunc, pArgument);
         return pRet;
@@ -80,6 +79,9 @@ std::string PythonFileCaller::getErrorStr()
 
 void PythonFileCaller::initEnv()
 {
+    Return_If(m_env_inited);
+    m_env_inited = true;
+
     Py_Initialize();
 
     PyRun_SimpleString("import sys");
@@ -89,6 +91,7 @@ void PythonFileCaller::initEnv()
 
 void PythonFileCaller::uninitEnv()
 {
+    Return_If(!m_env_inited);
     Py_Finalize();
 }
 

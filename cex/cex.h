@@ -5,8 +5,10 @@
 #include "Observer.h"
 #include "OnFinally.h"
 #include "Singleton.h"
+#include "stringex.h"
 
 //using namespace cex;
+
 
 #include <cstdarg>
 #include <cassert>
@@ -33,6 +35,14 @@ typedef unsigned long ulong;
 
 namespace cex
 {	
+	/*
+	 *	可重入版本
+	 *	线程安全但效率低一点
+	 *	建议使用
+	 *	
+	 *	本来应该使用变参模板去做
+	 *	但vs2012不支持
+	 */
 	template<int buffsize>
 	std::string to_str(const char* format, ...)
 	{
@@ -48,6 +58,11 @@ namespace cex
 		return temp;
 	}
 
+	/*
+	 *	不可重入版本
+	 *	非线程安全但效率高一点
+	 *	易错，慎用
+	 */
 	template<int buffsize>
 	const char* to_cstr(const char* format, ...)
 	{
@@ -63,6 +78,9 @@ namespace cex
 		return static_buff;
 	}
 
+	/*
+	 *	一般情况下，可以使用这两个宏定义简化代码编写
+	 */
 	#define cstr to_cstr<512>
 	#define sstr to_str<512>
 }

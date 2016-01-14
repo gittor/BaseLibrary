@@ -24,6 +24,9 @@ namespace libpy {
     private:
         void check_copy_python_stdlib();
         std::string get_writeable_stdlib_zip();
+
+    private:
+        static std::string m_py_stdlib_path;
     };
 }
 

@@ -7,6 +7,7 @@
 //
 
 #include "CCPythonCaller.h"
+#include "py_tools.h"
 #include "cocos2d.h"
 #include "cex.h"
 
@@ -28,15 +29,22 @@ void libpy::copy_py_stdlib_to_writeable(const std::string& src_zip, const std::s
 }
 
 const char* libpy_zip = "libpy_lib.zip";
+std::string CCPythonCaller::m_py_stdlib_path;
 
 CCPythonCaller::CCPythonCaller(const std::string& py_file)
 :PythonFileCaller(py_file)
 {
     check_copy_python_stdlib();
 
-    addSearchPath( FileUtils::getInstance()->getWritablePath() );
-    addSearchPath( get_writeable_stdlib_zip() );
-    addSearchPath( get_writeable_stdlib_zip()+"/Lib" );
+    if (m_py_stdlib_path.empty()) {
+        m_py_stdlib_path = FileUtils::getInstance()->fullPathForFilename(libpy_zip)+"/Lib";
+
+        libpy::addDefaultSearchPath(m_py_stdlib_path);
+
+        libpy::addDefaultSearchPath( FileUtils::getInstance()->getWritablePath() );
+        libpy::addDefaultSearchPath( get_writeable_stdlib_zip() );
+        libpy::addDefaultSearchPath( get_writeable_stdlib_zip()+"/Lib" );
+    }
 }
 
 CCPythonCaller::~CCPythonCaller()

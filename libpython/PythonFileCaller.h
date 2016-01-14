@@ -31,6 +31,7 @@ namespace libpy {
         
     private:
         std::string m_module_name;
+        bool m_env_inited;
     };
 
 }

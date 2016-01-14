@@ -13,6 +13,7 @@
 
 namespace libpy
 {
+    void addDefaultSearchPath(const std::string& path);
     std::string getModuleName(const std::string& py_file);
 };
 
