@@ -25,6 +25,8 @@ PythonFileCaller::~PythonFileCaller()
 
 void PythonFileCaller::addSearchPath(const std::string& path)
 {
+    initEnv();
+    
     const char* cmd = cex::cstr("sys.path.append(\"%s\")", path.c_str());
     PyRun_SimpleString( cmd );
 }
